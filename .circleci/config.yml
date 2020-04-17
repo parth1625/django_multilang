@@ -23,3 +23,19 @@ jobs:
       - store_artifacts:
           path: test-reports/
           destination: python_app
+  deploy:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - run:
+          name: AWS EC2 deploy
+          command: |
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-233-107-60.ap-south-1.compute.amazonaws.com "bash deploy.sh" \
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
